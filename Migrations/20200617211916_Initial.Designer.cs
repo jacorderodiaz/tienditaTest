@@ -9,7 +9,7 @@ using Tiendita.Models;
 namespace Tiendita.Migrations
 {
     [DbContext(typeof(TienditaContext))]
-    [Migration("20200611203749_Initial")]
+    [Migration("20200617211916_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,6 +70,23 @@ namespace Tiendita.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Productos");
+                });
+
+            modelBuilder.Entity("Tiendita.Models.Usuario", b =>
+                {
+                    b.Property<uint>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int unsigned");
+
+                    b.Property<string>("Contrasena")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Correo")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("Tiendita.Models.Venta", b =>

@@ -70,6 +70,23 @@ namespace Tiendita.Migrations
                     b.ToTable("Productos");
                 });
 
+            modelBuilder.Entity("Tiendita.Models.Usuario", b =>
+                {
+                    b.Property<uint>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int unsigned");
+
+                    b.Property<string>("Contrasena")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Correo")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Usuarios");
+                });
+
             modelBuilder.Entity("Tiendita.Models.Venta", b =>
                 {
                     b.Property<uint>("Id")

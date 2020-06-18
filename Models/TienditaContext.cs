@@ -11,6 +11,7 @@ namespace Tiendita.Models
         public DbSet<Venta> Ventas { get; set; }
         public DbSet<Detalle> Detalles { get; set; }
 
+        public DbSet<Usuario> Usuarios { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySql("server=localhost;database=tiendita;user=root;password=");
