@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Tiendita.Models;
+using Tiendita.utils;
 
 namespace Tiendita
 {
@@ -45,13 +46,88 @@ namespace Tiendita
 
 
         }
+        public static void InicioUsuarioExistente()
+        {
+            Console.WriteLine("Ya existe este usuario.");
+            Console.WriteLine("1) Crear usuario");
+            Console.WriteLine("2) Entar");
+            Console.WriteLine("0) Salir");
 
-        public static void Login()
+            string opcion = Console.ReadLine();
+
+            if (opcion == "1" || opcion == "2" || opcion == "0")
+            {
+                switch (opcion)
+                {
+                    case "1":
+                        CrearUsuario();
+                        break;
+                    case "2":
+                        Login();
+                        break;
+                    case "0":
+                        Environment.Exit(0);
+                        break;
+
+                }
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Ingresa un numero valido");
+                Inicio();
+            }
+        }
+        public static void datosInvalidosMenu()
+        {
+            Console.WriteLine("Datos invalidos ¿Quiere intentar de nuevo?");
+            Console.WriteLine("1) Intentar de nuevo");
+            Console.WriteLine("2) Ir al menu");
+
+
+            string opcion = Console.ReadLine();
+
+            if (opcion == "1" || opcion == "2" )
+            {
+                switch (opcion)
+                {
+                    case "1":
+                        Console.Clear();
+
+                        Login();
+                        break;
+                    case "2":
+                        Console.Clear();
+
+                        Inicio();
+                        break;
+                }
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Ingresa un numero valido");
+                Inicio();
+            }
+        }
+
+            public static void Login()
         {
             Console.WriteLine("Escriba el correo");
             string correo = Console.ReadLine();
+            if (correo == "")
+            {
+                Console.Clear();
+
+                datosInvalidosMenu();
+            }
             Console.WriteLine("Escriba la cotraseña");
             string contrasena = Console.ReadLine();
+            if (contrasena=="")
+            {
+                Console.Clear();
+                datosInvalidosMenu();
+            }
 
             using (TienditaContext context = new TienditaContext())
             {
@@ -59,12 +135,13 @@ namespace Tiendita
                 foreach (Usuario usuario in usuarios)
                 {
                     usuario.Contrasena = Seguridad.DesEncriptar(usuario.Contrasena);
-                    Console.WriteLine(usuario.Contrasena);
                     if (usuario.Correo == correo && usuario.Contrasena == contrasena)
                     {
+                        Console.Clear();
                         Menu();
                     }else
                     {
+                        Console.Clear();
                         Console.WriteLine("Intenta de nuevo");
                         Login();
                     }
@@ -83,26 +160,73 @@ namespace Tiendita
                 {
                     if (usuario.Correo == usu.Correo)
                     {
-                        Console.WriteLine("Ya existe este usuario.");
-                        CrearUsuario();
+                        Console.Clear();
+                        InicioUsuarioExistente();
                     }
                 }
-                Console.WriteLine(usuario.Contrasena);
+
                 context.Add(usuario);
                 context.SaveChanges();
+                Console.Clear();
                 Console.WriteLine("Usuario creado");
                 Menu();
             }
         }
+        public static void LlenarUsuarioInvalido()
+        {
+            Console.WriteLine("Datos invalidos ¿Quiere intentar de nuevo?");
+            Console.WriteLine("1) Intentar de nuevo");
+            Console.WriteLine("2) Ir al menu");
 
-        public static Usuario LlenarUsuario (Usuario usuario)
+
+            string opcion = Console.ReadLine();
+
+            if (opcion == "1" || opcion == "2")
+            {
+                switch (opcion)
+                {
+                    case "1":
+                        Console.Clear();
+
+                        CrearUsuario();
+                        break;
+                    case "2":
+                        Console.Clear();
+
+                        Inicio();
+                        break;
+                }
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Ingresa un numero valido");
+                Inicio();
+            }
+        }
+
+            public static Usuario LlenarUsuario (Usuario usuario)
         {
             Console.Write("Correo: ");
-            usuario.Correo = Console.ReadLine();
+            string cor = usuario.Correo = Console.ReadLine();
+            if (EmailUtils.IsValidEmail(cor))
+            {
+                Console.WriteLine("Correo valido");
+            }
+            else
+            {
+                Console.Clear();
+                LlenarUsuarioInvalido();
+            }
+            Console.WriteLine("Escriba una contraseña con al menos un numero y minimo 8 caracteres");
             Console.Write("Contraseña: ");
-            usuario.Contrasena = Console.ReadLine();
+           string c = usuario.Contrasena = Console.ReadLine();
+            if (ContraseñaUtils.IsValiPassword(c) == true)
+            {
+                Console.Clear();
+                LlenarUsuarioInvalido();
+            }
             usuario.Contrasena = Seguridad.Encriptar(usuario.Contrasena);
-            Console.WriteLine(usuario.Contrasena);
             return usuario;
 
         }
@@ -246,22 +370,4 @@ namespace Tiendita
         }
     }
 
-    public static class Seguridad
-    {
-        public static string Encriptar(this string _cadenaAencriptar)
-        {
-            string result = string.Empty;
-            byte[] encryted = System.Text.Encoding.Unicode.GetBytes(_cadenaAencriptar);
-            result = Convert.ToBase64String(encryted);
-            return result;
-        }
-
-        public static string DesEncriptar(this string _cadenaAdesencriptar)
-        {
-            string result = string.Empty;
-            byte[] decryted = Convert.FromBase64String(_cadenaAdesencriptar);
-            result = System.Text.Encoding.Unicode.GetString(decryted);
-            return result;
-        }
-    }
 }
