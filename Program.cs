@@ -290,6 +290,24 @@ namespace Tiendita
                 foreach (Producto producto in productos)
                 {
                     Console.WriteLine(producto);
+                    Menu();   
+                }
+            }
+        }
+
+        public static void FiltrarProductos()
+        {
+            Console.WriteLine("Buscar prodcutos");
+            Console.Write("Buscar: ");
+            string buscar = Console.ReadLine();
+
+            using (TienditaContext context = new TienditaContext())
+            {
+                IQueryable<Producto> productos = context.Productos.Where(p => p.Nombre.Contains(buscar));
+                foreach (Producto producto in productos)
+                {
+                    Console.WriteLine(producto);
+
                 }
             }
         }
@@ -305,6 +323,8 @@ namespace Tiendita
                 context.Add(producto);
                 context.SaveChanges();
                 Console.WriteLine("Producto creado");
+                Menu();
+
             }
         }
 
@@ -322,13 +342,13 @@ namespace Tiendita
             producto.Cantidad = decimal.Parse(Console.ReadLine());
             Console.Write("Tamaño: ");
             producto.Tamano = Console.ReadLine();
-
+            Console.Clear();
             return producto;
         }
 
         public static Producto SelecionarProducto()
         {
-            BuscarProductos();
+            FiltrarProductos();
             Console.Write("Seleciona el código de producto: ");
             uint id = uint.Parse(Console.ReadLine());
             using (TienditaContext context = new TienditaContext())
@@ -352,6 +372,8 @@ namespace Tiendita
                 context.Update(producto);
                 context.SaveChanges();
                 Console.WriteLine("Producto actualizado");
+                Menu();
+
             }
         }
 
@@ -363,9 +385,9 @@ namespace Tiendita
             {
                 context.Remove(producto);
                 context.SaveChanges();
-                Console.WriteLine("Producto eliminado");
                 Console.Clear();
-
+                Console.WriteLine("Producto eliminado");
+                Menu();
             }
         }
     }
